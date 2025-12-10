@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'screen/genero.dart';
-import 'screen/orden_compra.dart';
+import 'screens/genero.dart';
+import 'screens/orden_compra.dart';
 
 void main() {
   runApp(const MainApp());
