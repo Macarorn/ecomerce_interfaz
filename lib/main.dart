@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
+import 'screens/login.dart'; 
 import 'screens/genero.dart';
 import 'screens/orden_compra.dart';
 import 'screens/categorias.dart';
@@ -17,11 +18,72 @@ class MainApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'E-Commerce',
       theme: ThemeData(primarySwatch: Colors.blue, useMaterial3: true),
-      home: const HomeScreen(),
+      home: const AuthWrapper(), // Cambiado de HomeScreen a AuthWrapper
     );
   }
 }
 
+// Widget que verifica el estado de autenticación
+class AuthWrapper extends StatefulWidget {
+  const AuthWrapper({super.key});
+
+  @override
+  State<AuthWrapper> createState() => _AuthWrapperState();
+}
+
+class _AuthWrapperState extends State<AuthWrapper> {
+  bool _isLoading = true;
+  bool _isLoggedIn = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkLoginStatus();
+  }
+
+  // Función para verificar si el usuario ya inició sesión
+  Future<void> _checkLoginStatus() async {
+    final prefs = await SharedPreferences.getInstance();
+    final savedEmail = prefs.getString('userEmail');
+    final savedPassword = prefs.getString('userPassword');
+    
+    // Verifica si hay credenciales guardadas
+    final isLoggedIn = savedEmail != null && 
+                      savedEmail.isNotEmpty && 
+                      savedPassword != null && 
+                      savedPassword.isNotEmpty;
+    
+    setState(() {
+      _isLoggedIn = isLoggedIn;
+      _isLoading = false;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_isLoading) {
+      // Muestra un loading mientras verifica
+      return Scaffold(
+        backgroundColor: Colors.white,
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CircularProgressIndicator(),
+              SizedBox(height: 20),
+              Text('Verificando sesión...'),
+            ],
+          ),
+        ),
+      );
+    }
+    
+    // Decide qué pantalla mostrar
+    return _isLoggedIn ? HomeScreen() : login();
+  }
+}
+
+// El resto del código de HomeScreen permanece igual
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
@@ -33,6 +95,24 @@ class HomeScreen extends StatelessWidget {
         centerTitle: true,
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.logout),
+            onPressed: () async {
+              // Cerrar sesión
+              final prefs = await SharedPreferences.getInstance();
+              await prefs.remove('userEmail');
+              await prefs.remove('userPassword');
+              
+              // Regresar al login
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => login()),
+                (route) => false,
+              );
+            },
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -73,7 +153,6 @@ class HomeScreen extends StatelessWidget {
                   builder: (context) => const categorias(),
                 ),
               ),
-             
             ),
             _buildMenuItem(
               context,
