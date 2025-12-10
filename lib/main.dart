@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'screens/genero.dart';
 import 'screens/orden_compra.dart';
+import 'screens/categorias.dart';
 
 void main() {
   runApp(const MainApp());
@@ -66,7 +67,13 @@ class HomeScreen extends StatelessWidget {
               'Categorias',
               Icons.category,
               Colors.red,
-              () => _showPendingScreen(context, 'Categorias'),
+              () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const categorias(),
+                ),
+              ),
+             
             ),
             _buildMenuItem(
               context,
