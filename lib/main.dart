@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'screens/login.dart'; 
+import 'screens/login.dart';
 import 'screens/genero.dart';
 import 'screens/orden_compra.dart';
 import 'screens/categorias.dart';
+import 'screens/profile_screen.dart';
 
 void main() {
   runApp(const MainApp());
@@ -46,13 +47,14 @@ class _AuthWrapperState extends State<AuthWrapper> {
     final prefs = await SharedPreferences.getInstance();
     final savedEmail = prefs.getString('userEmail');
     final savedPassword = prefs.getString('userPassword');
-    
+
     // Verifica si hay credenciales guardadas
-    final isLoggedIn = savedEmail != null && 
-                      savedEmail.isNotEmpty && 
-                      savedPassword != null && 
-                      savedPassword.isNotEmpty;
-    
+    final isLoggedIn =
+        savedEmail != null &&
+        savedEmail.isNotEmpty &&
+        savedPassword != null &&
+        savedPassword.isNotEmpty;
+
     setState(() {
       _isLoggedIn = isLoggedIn;
       _isLoading = false;
@@ -77,7 +79,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
         ),
       );
     }
-    
+
     // Decide qué pantalla mostrar
     return _isLoggedIn ? HomeScreen() : login();
   }
@@ -103,7 +105,7 @@ class HomeScreen extends StatelessWidget {
               final prefs = await SharedPreferences.getInstance();
               await prefs.remove('userEmail');
               await prefs.remove('userPassword');
-              
+
               // Regresar al login
               Navigator.pushAndRemoveUntil(
                 context,
@@ -133,7 +135,21 @@ class HomeScreen extends StatelessWidget {
               'Perfil de usuario',
               Icons.person,
               Colors.green,
-              () => _showPendingScreen(context, 'Perfil de usuario'),
+              () {
+                // Debug: confirmar que el tap se recibe
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Abriendo Perfil de usuario...'),
+                  ),
+                );
+                print('DEBUG: Perfil de usuario tapped');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ProfileScreen(),
+                  ),
+                );
+              },
             ),
             _buildMenuItem(
               context,
@@ -149,9 +165,7 @@ class HomeScreen extends StatelessWidget {
               Colors.red,
               () => Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => const categorias(),
-                ),
+                MaterialPageRoute(builder: (context) => const categorias()),
               ),
             ),
             _buildMenuItem(
