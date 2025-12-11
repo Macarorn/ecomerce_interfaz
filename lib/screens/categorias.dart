@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'pago.dart';
 
-class categorias extends StatefulWidget {
-  const categorias({super.key});
+class Categorias extends StatefulWidget {
+  const Categorias({super.key});
 
   @override
-  State<categorias> createState() => _categoriasState();
+  State<Categorias> createState() => _CategoriasState();
 }
 
-class _categoriasState extends State<categorias> {
+class _CategoriasState extends State<Categorias> {
   final Color primaryColor = const Color(0xFF40BFFF);
   final Color textColor = const Color(0xFF223263);
   final Color greyColor = const Color(0xFF9098B1);
@@ -183,10 +183,10 @@ class _categoriasState extends State<categorias> {
               decoration: BoxDecoration(
                 color: whiteColor,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: greyColor.withOpacity(0.15)),
+                border: Border.all(color: greyColor.withAlpha(38)),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.04),
+                    color: Colors.black.withAlpha(10),
                     blurRadius: 3,
                     offset: const Offset(0, 1),
                   ),
