@@ -4,7 +4,7 @@ import 'screens/login.dart';
 import 'screens/genero.dart';
 import 'screens/orden_compra.dart';
 import 'screens/categorias.dart';
-import 'screens/profile_screen.dart';
+import 'screens/prefil.dart';
 
 void main() {
   runApp(const MainApp());

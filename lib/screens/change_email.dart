@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'delete_confirmation_screen.dart';
+import 'delete_confirmation.dart';
 
 class ChangeEmailScreen extends StatefulWidget {
   const ChangeEmailScreen({Key? key}) : super(key: key);

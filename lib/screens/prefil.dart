@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'change_email_screen.dart';
-import 'category_screen.dart';
+import 'change_email.dart';
+import 'category_s.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({Key? key}) : super(key: key);
