@@ -4,6 +4,7 @@ import 'screens/login.dart';
 import 'screens/genero.dart';
 import 'screens/orden_compra.dart';
 import 'screens/categorias.dart';
+import 'screens/prefil.dart';
 import 'screens/product_grid.dart';
 import 'screens/cart_screen.dart';
 
@@ -136,7 +137,21 @@ class HomeScreen extends StatelessWidget {
               'Perfil de usuario',
               Icons.person,
               Colors.green,
-              () => _showPendingScreen(context, 'Perfil de usuario'),
+              () {
+                // Debug: confirmar que el tap se recibe
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Abriendo Perfil de usuario...'),
+                  ),
+                );
+                print('DEBUG: Perfil de usuario tapped');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ProfileScreen(),
+                  ),
+                );
+              },
             ),
             _buildMenuItem(
               context,
