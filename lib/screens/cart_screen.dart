@@ -1,8 +1,10 @@
+import 'package:ecomerce_interfaz/screens/pago.dart';
 import 'package:flutter/material.dart';
+
 import '../models/cart.dart';
 
 class CartScreen extends StatefulWidget {
-  const CartScreen({Key? key}) : super(key: key);
+  const CartScreen({super.key});
 
   @override
   State<CartScreen> createState() => _CartScreenState();
@@ -17,7 +19,7 @@ class _CartScreenState extends State<CartScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Carrito de compra →'),
+        title: const Text('Carrito de compra'),
         backgroundColor: Colors.white,
         foregroundColor: Colors.black87,
         elevation: 1,
@@ -30,11 +32,12 @@ class _CartScreenState extends State<CartScreen> {
               child: ValueListenableBuilder<List<CartItem>>(
                 valueListenable: Cart.instance.items,
                 builder: (context, list, _) {
-                  if (list.isEmpty)
+                  if (list.isEmpty) {
                     return const Center(child: Text('Tu carrito está vacío'));
+                  }
                   return ListView.separated(
                     itemCount: list.length,
-                    separatorBuilder: (_, __) => const Divider(height: 20),
+                    separatorBuilder: (_, _) => const Divider(height: 20),
                     itemBuilder: (context, i) {
                       final it = list[i];
                       return Row(
@@ -180,6 +183,7 @@ class _CartScreenState extends State<CartScreen> {
                         borderRadius: BorderRadius.circular(8),
                         boxShadow: [
                           BoxShadow(
+                            // ignore: deprecated_member_use
                             color: Colors.grey.withOpacity(0.08),
                             blurRadius: 8,
                           ),
@@ -205,12 +209,21 @@ class _CartScreenState extends State<CartScreen> {
 
                     const SizedBox(height: 12),
                     ElevatedButton(
-                      onPressed: list.isEmpty ? null : () {},
-                      child: Text(
-                        list.isEmpty ? 'Carrito vacío' : 'Finalizar compra',
-                      ),
+                      onPressed: list.isEmpty
+                          ? null
+                          : () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const PagoPage(),
+                                ),
+                              );
+                            },
                       style: ElevatedButton.styleFrom(
                         minimumSize: const Size(double.infinity, 48),
+                      ),
+                      child: Text(
+                        list.isEmpty ? 'Carrito vacío' : 'Finalizar compra',
                       ),
                     ),
                   ],
@@ -261,28 +274,33 @@ IconData _iconForTitle(String title) {
       t.contains('phone') ||
       t.contains('teléfono') ||
       t.contains('telefono') ||
-      t.contains('móvil'))
+      t.contains('móvil')) {
     return Icons.smartphone;
+  }
   if (t.contains('laptop') ||
       t.contains('notebook') ||
       t.contains('portátil') ||
-      t.contains('portatil'))
+      t.contains('portatil')) {
     return Icons.laptop_mac;
+  }
   if (t.contains('headphone') ||
       t.contains('headset') ||
       t.contains('auricular') ||
-      t.contains('auriculares'))
+      t.contains('auriculares')) {
     return Icons.headphones;
+  }
   if (t.contains('smartwatch') ||
       t.contains('watch') ||
       t.contains('reloj') ||
-      t.contains('reloj inteligente'))
+      t.contains('reloj inteligente')) {
     return Icons.watch;
+  }
   if (t.contains('charger') ||
       t.contains('wireless charger') ||
       t.contains('carga') ||
-      t.contains('cargador'))
+      t.contains('cargador')) {
     return Icons.power;
+  }
   if (t.contains('speaker') || t.contains('altavoz')) return Icons.speaker;
   return Icons.devices;
 }

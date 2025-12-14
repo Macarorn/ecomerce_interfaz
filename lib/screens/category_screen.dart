@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
+import 'product_grid.dart';
+import 'products_by_category.dart';
+
 class CategoryScreen extends StatefulWidget {
-  const CategoryScreen({Key? key}) : super(key: key);
+  const CategoryScreen({super.key});
 
   @override
   State<CategoryScreen> createState() => _CategoryScreenState();
@@ -9,36 +12,89 @@ class CategoryScreen extends StatefulWidget {
 
 class _CategoryScreenState extends State<CategoryScreen> {
   final List<Map<String, dynamic>> _categories = [
-    {'label': 'Teléfonos', 'icon': Icons.phone_iphone, 'color': Colors.indigo},
+    {
+      'label': 'Teléfonos',
+      'icon': Icons.phone_iphone,
+      'color': Colors.indigo,
+      'id': 1,
+    },
     {
       'label': 'Portátiles',
       'icon': Icons.laptop_mac,
       'color': Colors.deepPurple,
+      'id': 2,
     },
-    {'label': 'Auriculares', 'icon': Icons.headset, 'color': Colors.teal},
-    {'label': 'Monitores', 'icon': Icons.monitor, 'color': Colors.blue},
-    {'label': 'Accesorios', 'icon': Icons.watch, 'color': Colors.orange},
+    {
+      'label': 'Auriculares',
+      'icon': Icons.headset,
+      'color': Colors.teal,
+      'id': 3,
+    },
     {
       'label': 'Smartwatches',
       'icon': Icons.watch_outlined,
       'color': Colors.green,
+      'id': 4,
     },
-    {'label': 'Tablets', 'icon': Icons.tablet_mac, 'color': Colors.purple},
-    {'label': 'Cameras', 'icon': Icons.camera_alt, 'color': Colors.redAccent},
-    {'label': 'Drones', 'icon': Icons.flight, 'color': Colors.cyan},
+    {
+      'label': 'Accesorios',
+      'icon': Icons.watch,
+      'color': Colors.orange,
+      'id': 5,
+    },
+    {
+      'label': 'Tablets',
+      'icon': Icons.tablet_mac,
+      'color': Colors.purple,
+      'id': 6,
+    },
+    {
+      'label': 'Cameras',
+      'icon': Icons.camera_alt,
+      'color': Colors.redAccent,
+      'id': 7,
+    },
+    {'label': 'Drones', 'icon': Icons.flight, 'color': Colors.cyan, 'id': 8},
     {
       'label': 'Gaming',
       'icon': Icons.sports_esports,
       'color': Colors.deepOrange,
+      'id': 9,
     },
-    {'label': 'Printers', 'icon': Icons.print, 'color': Colors.brown},
-    {'label': 'Networking', 'icon': Icons.router, 'color': Colors.blueGrey},
-    {'label': 'Smart Home', 'icon': Icons.home, 'color': Colors.lightBlue},
-    {'label': 'Wearables', 'icon': Icons.fitness_center, 'color': Colors.pink},
-    {'label': 'Components', 'icon': Icons.memory, 'color': Colors.amber},
+    {
+      'label': 'Monitores',
+      'icon': Icons.monitor,
+      'color': Colors.blue,
+      'id': 10,
+    },
+    {'label': 'Printers', 'icon': Icons.print, 'color': Colors.brown, 'id': 11},
+    {
+      'label': 'Networking',
+      'icon': Icons.router,
+      'color': Colors.blueGrey,
+      'id': 12,
+    },
+    {
+      'label': 'Smart Home',
+      'icon': Icons.home,
+      'color': Colors.lightBlue,
+      'id': 13,
+    },
+    {
+      'label': 'Wearables',
+      'icon': Icons.fitness_center,
+      'color': Colors.pink,
+      'id': 14,
+    },
+    {
+      'label': 'Components',
+      'icon': Icons.memory,
+      'color': Colors.amber,
+      'id': 15,
+    },
   ];
 
-  int _selectedIndex = -1;
+  final int _selectedIndex = -1;
   String _search = '';
 
   List<Map<String, dynamic>> get _filtered => _categories
@@ -62,10 +118,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
               color: Colors.white,
               borderRadius: BorderRadius.circular(8),
             ),
-            child: ListView(
-              padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).viewInsets.bottom,
-              ),
+            child: Column(
               children: [
                 // Header
                 Container(
@@ -75,13 +128,6 @@ class _CategoryScreenState extends State<CategoryScreen> {
                   ),
                   child: Row(
                     children: [
-                      IconButton(
-                        icon: const Icon(
-                          Icons.arrow_back,
-                          color: Colors.black87,
-                        ),
-                        onPressed: () => Navigator.maybePop(context),
-                      ),
                       const SizedBox(width: 6),
                       const Text(
                         'Categorías',
@@ -107,7 +153,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
-                            color: Colors.blue.shade100,
+                            color: Colors.grey.shade300,
                             width: 1.2,
                           ),
                         ),
@@ -136,166 +182,139 @@ class _CategoryScreenState extends State<CategoryScreen> {
                           ],
                         ),
                       ),
-                      const SizedBox(height: 14),
-                      // Card with grid
-                      Container(
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(14),
-                          border: Border.all(
-                            color: Colors.blue.shade200,
-                            width: 1.6,
+                    ],
+                  ),
+                ),
+                // Grid de categorías scrolleable
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 14.0),
+                    child: GridView.builder(
+                      itemCount: _filtered.length,
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            mainAxisSpacing: 12,
+                            crossAxisSpacing: 12,
+                            childAspectRatio: 3 / 2,
                           ),
-                        ),
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                                vertical: 14,
-                              ),
-                              child: Row(
+                      itemBuilder: (context, i) {
+                        final item = _filtered[i];
+                        final idx = _categories.indexOf(item);
+                        final selected = idx == _selectedIndex;
+                        return AnimatedContainer(
+                          duration: const Duration(milliseconds: 220),
+                          curve: Curves.easeOutCubic,
+                          decoration: BoxDecoration(
+                            color: selected
+                                ? Colors.blue.shade50
+                                : Colors.white,
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: selected
+                                  ? Colors.blue.shade300
+                                  : Colors.grey.shade100,
+                              width: selected ? 1.6 : 1,
+                            ),
+                          ),
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(12),
+                            onTap: () {
+                              final label = item['label'] as String;
+                              final Map<String, List<String>> categoryKeywords =
+                                  {
+                                    'Teléfonos': ['teléfono', 'phone'],
+                                    'Portátiles': [
+                                      'portátil',
+                                      'laptop',
+                                      'notebook',
+                                    ],
+                                    'Auriculares': [
+                                      'auricular',
+                                      'auriculares',
+                                      'headphone',
+                                      'headset',
+                                    ],
+                                    'Smartwatches': ['reloj', 'smartwatch'],
+                                    'Accesorios': [
+                                      'accesorio',
+                                      'carga',
+                                      'base',
+                                      'charger',
+                                    ],
+                                    'Tablets': ['tablet'],
+                                    'Cameras': ['cámara', 'camera'],
+                                    'Drones': ['drone'],
+                                    'Gaming': ['gaming'],
+                                    'Monitores': ['monitor'],
+                                    'Printers': ['printer'],
+                                    'Networking': ['router', 'network'],
+                                    'Smart Home': ['home'],
+                                    'Wearables': ['wearable'],
+                                    'Components': ['component'],
+                                  };
+                              final keywords =
+                                  categoryKeywords[label] ??
+                                  [label.toLowerCase()];
+                              final filteredProducts = ProductGridScreen
+                                  .products
+                                  .where((p) {
+                                    final title = p.title.toLowerCase();
+                                    return keywords.any(
+                                      (k) => title.contains(k),
+                                    );
+                                  })
+                                  .toList();
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => ProductsByCategoryScreen(
+                                    category: label,
+                                    products: filteredProducts,
+                                  ),
+                                ),
+                              );
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Container(
-                                    padding: const EdgeInsets.all(8),
+                                    width: 44,
+                                    height: 44,
                                     decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                        colors: [
-                                          Colors.blue.shade300,
-                                          Colors.blue.shade500,
-                                        ],
+                                      color: (item['color'] as Color)
+                                          // ignore: deprecated_member_use
+                                          .withOpacity(0.12),
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Center(
+                                      child: Icon(
+                                        item['icon'] as IconData,
+                                        color: item['color'] as Color,
+                                        size: 22,
                                       ),
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    child: const Icon(
-                                      Icons.grid_view,
-                                      color: Colors.white,
                                     ),
                                   ),
-                                  const SizedBox(width: 12),
-                                  const Text(
-                                    'Tecnología',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w800,
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                  const Spacer(),
+                                  const SizedBox(height: 16),
                                   Text(
-                                    '${_filtered.length} elementos',
+                                    item['label'] as String,
                                     style: TextStyle(
-                                      color: Colors.grey.shade600,
-                                      fontWeight: FontWeight.w600,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w700,
+                                      color: selected
+                                          ? Colors.blue.shade900
+                                          : Colors.black87,
                                     ),
                                   ),
                                 ],
                               ),
                             ),
-                            const Divider(height: 1),
-                            Padding(
-                              padding: const EdgeInsets.all(12.0),
-                              child: SizedBox(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.55,
-                                child: GridView.builder(
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  shrinkWrap: true,
-                                  itemCount: _filtered.length,
-                                  gridDelegate:
-                                      const SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: 2,
-                                        mainAxisSpacing: 12,
-                                        crossAxisSpacing: 12,
-                                        childAspectRatio: 3 / 2,
-                                      ),
-                                  itemBuilder: (context, i) {
-                                    final item = _filtered[i];
-                                    final idx = _categories.indexOf(item);
-                                    final selected = idx == _selectedIndex;
-                                    return AnimatedContainer(
-                                      duration: const Duration(
-                                        milliseconds: 220,
-                                      ),
-                                      curve: Curves.easeOutCubic,
-                                      decoration: BoxDecoration(
-                                        color: selected
-                                            ? Colors.blue.shade50
-                                            : Colors.white,
-                                        borderRadius: BorderRadius.circular(12),
-                                        border: Border.all(
-                                          color: selected
-                                              ? Colors.blue.shade300
-                                              : Colors.grey.shade100,
-                                          width: selected ? 1.6 : 1,
-                                        ),
-                                      ),
-                                      child: InkWell(
-                                        borderRadius: BorderRadius.circular(12),
-                                        onTap: () {
-                                          setState(() {
-                                            _selectedIndex = selected
-                                                ? -1
-                                                : idx;
-                                          });
-                                        },
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(12.0),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Container(
-                                                width: 44,
-                                                height: 44,
-                                                decoration: BoxDecoration(
-                                                  color:
-                                                      (item['color'] as Color)
-                                                          .withOpacity(0.12),
-                                                  shape: BoxShape.circle,
-                                                ),
-                                                child: Center(
-                                                  child: Icon(
-                                                    item['icon'] as IconData,
-                                                    color:
-                                                        item['color'] as Color,
-                                                    size: 22,
-                                                  ),
-                                                ),
-                                              ),
-                                              const SizedBox(height: 8),
-                                              Text(
-                                                item['label'] as String,
-                                                style: TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w700,
-                                                  color: selected
-                                                      ? Colors.blue.shade900
-                                                      : Colors.black87,
-                                                ),
-                                              ),
-                                              const SizedBox(height: 4),
-                                              Text(
-                                                'Ver productos',
-                                                style: TextStyle(
-                                                  fontSize: 12,
-                                                  color: Colors.grey.shade600,
-                                                  fontWeight: FontWeight.w600,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+                          ),
+                        );
+                      },
+                    ),
                   ),
                 ),
                 const SizedBox(height: 12),

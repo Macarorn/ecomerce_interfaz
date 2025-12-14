@@ -26,8 +26,9 @@ class CartItem {
     if (options != null && other.options != null) {
       if (options!.length != other.options!.length) return false;
       for (final k in options!.keys) {
-        if (!other.options!.containsKey(k) || other.options![k] != options![k])
+        if (!other.options!.containsKey(k) || other.options![k] != options![k]) {
           return false;
+        }
       }
     }
     return true;

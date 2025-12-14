@@ -4,8 +4,7 @@ import '../models/cart.dart';
 
 class ProductDetailScreen extends StatefulWidget {
   final Product product;
-  const ProductDetailScreen({required this.product, Key? key})
-    : super(key: key);
+  const ProductDetailScreen({required this.product, super.key});
 
   @override
   State<ProductDetailScreen> createState() => _ProductDetailScreenState();
@@ -354,10 +353,12 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: List.generate(5, (i) {
-        if (i < full)
+        if (i < full) {
           return const Icon(Icons.star, size: 16, color: Colors.amber);
-        if (i == full && half)
+        }
+        if (i == full && half) {
           return const Icon(Icons.star_half, size: 16, color: Colors.amber);
+        }
         return const Icon(Icons.star_border, size: 16, color: Colors.amber);
       }),
     );
@@ -369,28 +370,33 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         t.contains('phone') ||
         t.contains('teléfono') ||
         t.contains('telefono') ||
-        t.contains('móvil'))
+        t.contains('móvil')) {
       return Icons.smartphone;
+    }
     if (t.contains('laptop') ||
         t.contains('notebook') ||
         t.contains('portátil') ||
-        t.contains('portatil'))
+        t.contains('portatil')) {
       return Icons.laptop_mac;
+    }
     if (t.contains('headphone') ||
         t.contains('headset') ||
         t.contains('auricular') ||
-        t.contains('auriculares'))
+        t.contains('auriculares')) {
       return Icons.headphones;
+    }
     if (t.contains('smartwatch') ||
         t.contains('watch') ||
         t.contains('reloj') ||
-        t.contains('reloj inteligente'))
+        t.contains('reloj inteligente')) {
       return Icons.watch;
+    }
     if (t.contains('charger') ||
         t.contains('wireless charger') ||
         t.contains('carga') ||
-        t.contains('cargador'))
+        t.contains('cargador')) {
       return Icons.power;
+    }
     if (t.contains('speaker') || t.contains('altavoz')) return Icons.speaker;
     return Icons.devices;
   }

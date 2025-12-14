@@ -1,9 +1,10 @@
+import 'package:ecomerce_interfaz/screens/change_password.dart';
 import 'package:flutter/material.dart';
+
 import 'change_email.dart';
-import 'category_s.dart';
 
 class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({Key? key}) : super(key: key);
+  const ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -11,6 +12,7 @@ class ProfileScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Perfil'),
+        foregroundColor: Colors.white,
         backgroundColor: primary,
         elevation: 0,
       ),
@@ -21,107 +23,59 @@ class ProfileScreen extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 700),
-              child: Card(
-                elevation: 6,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Row(
                     children: [
-                      Row(
-                        children: [
-                          CircleAvatar(
-                            radius: 36,
-                            backgroundColor: Colors.blue.shade50,
-                            child: const Icon(
-                              Icons.person,
-                              size: 36,
-                              color: Colors.blue,
-                            ),
-                          ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: const [
-                                Text(
-                                  'Maximus Gold',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                SizedBox(height: 4),
-                                Text(
-                                  '@derlaxy',
-                                  style: TextStyle(color: Colors.grey),
-                                ),
-                              ],
-                            ),
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.category_outlined),
-                            onPressed: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => const CategoryScreen(),
+                      CircleAvatar(
+                        radius: 36,
+                        backgroundColor: Colors.blue.shade50,
+                        child: const Icon(
+                          Icons.person,
+                          size: 36,
+                          color: Colors.blue,
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: const [
+                            Text(
+                              'Maximus Gold',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
                               ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const Divider(height: 28),
-                      _ProfileOption(
-                        icon: Icons.email_outlined,
-                        title: 'Correo electrónico',
-                        value: 'Derlaxy@yahoo.com',
-                        onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const ChangeEmailScreen(),
-                          ),
+                            ),                          ],
                         ),
-                      ),
-                      _ProfileOption(
-                        icon: Icons.wc_outlined,
-                        title: 'Género',
-                        value: 'Masculino',
-                      ),
-                      _ProfileOption(
-                        icon: Icons.cake_outlined,
-                        title: 'Cumpleaños',
-                        value: '12-12-2000',
-                      ),
-                      _ProfileOption(
-                        icon: Icons.phone_outlined,
-                        title: 'Teléfono',
-                        value: '(307) 555-0133',
-                      ),
-                      _ProfileOption(
-                        icon: Icons.lock_outline,
-                        title: 'Cambiar contraseña',
-                        value: '********',
-                        onTap: () {},
-                      ),
-                      const SizedBox(height: 12),
-                      ElevatedButton(
-                        onPressed: () async {
-                          // ejemplo: cerrar sesión
-                          Navigator.maybePop(context);
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: primary,
-                          foregroundColor: Colors.white,
-                          minimumSize: const Size.fromHeight(48),
-                        ),
-                        child: const Text('Volver'),
                       ),
                     ],
                   ),
-                ),
+                  const Divider(height: 28),
+                  _ProfileOption(
+                    title: 'Correo electrónico',
+                    value: 'Derlaxy@yahoo.com',
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const ChangeEmailScreen(),
+                      ),
+                    ),
+                  ),
+                  _ProfileOption(title: 'Teléfono', value: '(307) 555-0133'),
+                  _ProfileOption(
+                    title: 'Cambiar contraseña',
+                    value: '********',
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => ChangePassword()),
+                      );
+                    },
+                  ),
+                ],
               ),
             ),
           ),
@@ -132,17 +86,11 @@ class ProfileScreen extends StatelessWidget {
 }
 
 class _ProfileOption extends StatelessWidget {
-  final IconData icon;
   final String title;
   final String value;
   final VoidCallback? onTap;
 
-  const _ProfileOption({
-    required this.icon,
-    required this.title,
-    required this.value,
-    this.onTap,
-  });
+  const _ProfileOption({required this.title, required this.value, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -150,15 +98,6 @@ class _ProfileOption extends StatelessWidget {
       children: [
         ListTile(
           onTap: onTap,
-          leading: Container(
-            width: 44,
-            height: 44,
-            decoration: BoxDecoration(
-              color: Colors.blue.shade50,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Icon(icon, color: Colors.blue, size: 20),
-          ),
           title: Text(
             title,
             style: const TextStyle(fontWeight: FontWeight.w600),
@@ -172,7 +111,7 @@ class _ProfileOption extends StatelessWidget {
             ],
           ),
         ),
-        const Divider(height: 1, indent: 72),
+        const Divider(height: 1, indent: 16),
       ],
     );
   }
