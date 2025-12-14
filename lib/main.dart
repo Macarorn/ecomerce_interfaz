@@ -5,6 +5,8 @@ import 'screens/genero.dart';
 import 'screens/orden_compra.dart';
 import 'screens/categorias.dart';
 import 'screens/prefil.dart';
+import 'screens/product_grid.dart';
+import 'screens/cart_screen.dart';
 
 void main() {
   runApp(const MainApp());
@@ -156,7 +158,12 @@ class HomeScreen extends StatelessWidget {
               'Productos',
               Icons.shopping_bag,
               Colors.orange,
-              () => _showPendingScreen(context, 'Productos'),
+              () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ProductGridScreen(),
+                ),
+              ),
             ),
             _buildMenuItem(
               context,
@@ -173,7 +180,10 @@ class HomeScreen extends StatelessWidget {
               'Carrito de compra',
               Icons.shopping_cart,
               Colors.teal,
-              () => _showPendingScreen(context, 'Carrito de compra'),
+              () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const CartScreen()),
+              ),
             ),
             _buildMenuItem(
               context,
