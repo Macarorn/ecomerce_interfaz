@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'delete_confirmation.dart';
+
 
 class ChangeEmailScreen extends StatefulWidget {
   const ChangeEmailScreen({Key? key}) : super(key: key);
@@ -29,18 +29,6 @@ class _ChangeEmailScreenState extends State<ChangeEmailScreen> {
     Navigator.maybePop(context, true);
   }
 
-  Future<void> _confirmDelete() async {
-    final result = await Navigator.push<bool>(
-      context,
-      MaterialPageRoute(builder: (_) => const DeleteConfirmationScreen()),
-    );
-    if (result == true) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Correo eliminado')));
-      Navigator.maybePop(context, true);
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -125,16 +113,6 @@ class _ChangeEmailScreenState extends State<ChangeEmailScreen> {
                               ),
                             ),
                           ],
-                        ),
-                        const SizedBox(height: 12),
-                        Center(
-                          child: TextButton(
-                            onPressed: _confirmDelete,
-                            style: TextButton.styleFrom(
-                              foregroundColor: Colors.red,
-                            ),
-                            child: const Text('Eliminar correo'),
-                          ),
                         ),
                         const SizedBox(height: 6),
                         Center(
