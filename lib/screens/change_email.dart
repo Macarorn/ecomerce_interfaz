@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 
 class ChangeEmailScreen extends StatefulWidget {
-  const ChangeEmailScreen({Key? key}) : super(key: key);
+  const ChangeEmailScreen({super.key});
 
   @override
   State<ChangeEmailScreen> createState() => _ChangeEmailScreenState();
@@ -79,8 +79,9 @@ class _ChangeEmailScreenState extends State<ChangeEmailScreen> {
                             fillColor: Colors.white,
                           ),
                           validator: (v) {
-                            if (v == null || v.trim().isEmpty)
+                            if (v == null || v.trim().isEmpty) {
                               return 'Ingresa un correo';
+                            }
                             final email = v.trim();
                             if (!RegExp(
                               r"^[\w-.]+@[\w-]+\.[a-zA-Z]{2,}",

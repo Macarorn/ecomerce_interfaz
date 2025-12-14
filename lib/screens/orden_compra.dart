@@ -8,10 +8,6 @@ class OrdenCompraScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.pop(context),
-        ),
         title: const Text(
           'Orden',
           style: TextStyle(color: Colors.black, fontSize: 18),

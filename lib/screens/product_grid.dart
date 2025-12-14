@@ -3,7 +3,7 @@ import '../models/product.dart';
 import 'product_detail.dart';
 
 class ProductGridScreen extends StatelessWidget {
-  const ProductGridScreen({Key? key}) : super(key: key);
+  const ProductGridScreen({super.key});
 
   static const List<Product> products = <Product>[
     Product(
@@ -158,7 +158,7 @@ class ProductGridScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Lista de productos → Catálogo'),
+        title: const Text('Productos'),
         backgroundColor: Colors.white,
         foregroundColor: Colors.black87,
         elevation: 1,
@@ -270,28 +270,33 @@ class _ProductCard extends StatelessWidget {
         t.contains('phone') ||
         t.contains('teléfono') ||
         t.contains('telefono') ||
-        t.contains('móvil'))
+        t.contains('móvil')) {
       return Icons.smartphone;
+    }
     if (t.contains('laptop') ||
         t.contains('notebook') ||
         t.contains('portátil') ||
-        t.contains('portatil'))
+        t.contains('portatil')) {
       return Icons.laptop_mac;
+    }
     if (t.contains('headphone') ||
         t.contains('headset') ||
         t.contains('auricular') ||
-        t.contains('auriculares'))
+        t.contains('auriculares')) {
       return Icons.headphones;
+    }
     if (t.contains('smartwatch') ||
         t.contains('watch') ||
         t.contains('reloj') ||
-        t.contains('reloj inteligente'))
+        t.contains('reloj inteligente')) {
       return Icons.watch;
+    }
     if (t.contains('charger') ||
         t.contains('wireless charger') ||
         t.contains('carga') ||
-        t.contains('cargador'))
+        t.contains('cargador')) {
       return Icons.power;
+    }
     if (t.contains('speaker') || t.contains('altavoz')) return Icons.speaker;
     return Icons.devices;
   }

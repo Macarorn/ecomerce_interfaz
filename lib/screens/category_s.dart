@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class CategoryScreen extends StatefulWidget {
-  const CategoryScreen({Key? key}) : super(key: key);
+  const CategoryScreen({super.key});
 
   @override
   State<CategoryScreen> createState() => _CategoryScreenState();
@@ -260,6 +260,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                                 decoration: BoxDecoration(
                                                   color:
                                                       (item['color'] as Color)
+                                                          // ignore: deprecated_member_use
                                                           .withOpacity(0.12),
                                                   shape: BoxShape.circle,
                                                 ),
