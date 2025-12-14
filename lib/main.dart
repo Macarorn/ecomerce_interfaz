@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'screens/login.dart';
+
+import 'screens/cart_screen.dart';
+import 'screens/category_screen.dart';
 import 'screens/genero.dart';
+import 'screens/login.dart';
 import 'screens/orden_compra.dart';
-import 'screens/categorias.dart';
 import 'screens/prefil.dart';
 import 'screens/product_grid.dart';
-import 'screens/cart_screen.dart';
 
 void main() {
   runApp(const MainApp());
@@ -172,7 +173,7 @@ class HomeScreen extends StatelessWidget {
               Colors.red,
               () => Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const categorias()),
+                MaterialPageRoute(builder: (context) => const CategoryScreen()),
               ),
             ),
             _buildMenuItem(

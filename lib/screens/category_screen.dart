@@ -51,7 +51,6 @@ class _CategoryScreenState extends State<CategoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final borderBlue = Colors.blue.shade200;
     return Scaffold(
       resizeToAvoidBottomInset: true,
       backgroundColor: Colors.white,
@@ -62,7 +61,6 @@ class _CategoryScreenState extends State<CategoryScreen> {
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: borderBlue, width: 2.2),
             ),
             child: ListView(
               padding: EdgeInsets.only(
@@ -92,16 +90,9 @@ class _CategoryScreenState extends State<CategoryScreen> {
                           fontWeight: FontWeight.w700,
                         ),
                       ),
-                      const SizedBox(height: 8),
-                      IconButton(
-                        icon: const Icon(Icons.search, color: Colors.black54),
-                        onPressed: () {},
-                      ),
                     ],
                   ),
                 ),
-                const Divider(height: 1),
-                // Body
                 Padding(
                   padding: const EdgeInsets.all(14.0),
                   child: Column(
