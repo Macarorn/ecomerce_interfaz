@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'screens/login.dart'; 
+import 'screens/login.dart';
 import 'screens/genero.dart';
 import 'screens/orden_compra.dart';
 import 'screens/categorias.dart';
+import 'screens/product_grid.dart';
+import 'screens/cart_screen.dart';
 
 void main() {
   runApp(const MainApp());
@@ -46,13 +48,14 @@ class _AuthWrapperState extends State<AuthWrapper> {
     final prefs = await SharedPreferences.getInstance();
     final savedEmail = prefs.getString('userEmail');
     final savedPassword = prefs.getString('userPassword');
-    
+
     // Verifica si hay credenciales guardadas
-    final isLoggedIn = savedEmail != null && 
-                      savedEmail.isNotEmpty && 
-                      savedPassword != null && 
-                      savedPassword.isNotEmpty;
-    
+    final isLoggedIn =
+        savedEmail != null &&
+        savedEmail.isNotEmpty &&
+        savedPassword != null &&
+        savedPassword.isNotEmpty;
+
     setState(() {
       _isLoggedIn = isLoggedIn;
       _isLoading = false;
@@ -77,7 +80,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
         ),
       );
     }
-    
+
     // Decide qué pantalla mostrar
     return _isLoggedIn ? HomeScreen() : login();
   }
@@ -103,7 +106,7 @@ class HomeScreen extends StatelessWidget {
               final prefs = await SharedPreferences.getInstance();
               await prefs.remove('userEmail');
               await prefs.remove('userPassword');
-              
+
               // Regresar al login
               Navigator.pushAndRemoveUntil(
                 context,
@@ -140,7 +143,12 @@ class HomeScreen extends StatelessWidget {
               'Productos',
               Icons.shopping_bag,
               Colors.orange,
-              () => _showPendingScreen(context, 'Productos'),
+              () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ProductGridScreen(),
+                ),
+              ),
             ),
             _buildMenuItem(
               context,
@@ -149,9 +157,7 @@ class HomeScreen extends StatelessWidget {
               Colors.red,
               () => Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => const categorias(),
-                ),
+                MaterialPageRoute(builder: (context) => const categorias()),
               ),
             ),
             _buildMenuItem(
@@ -159,7 +165,10 @@ class HomeScreen extends StatelessWidget {
               'Carrito de compra',
               Icons.shopping_cart,
               Colors.teal,
-              () => _showPendingScreen(context, 'Carrito de compra'),
+              () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const CartScreen()),
+              ),
             ),
             _buildMenuItem(
               context,
