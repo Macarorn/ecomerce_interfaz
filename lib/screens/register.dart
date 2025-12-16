@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../services/auth_service.dart';
+import 'login.dart';
 
 class register extends StatefulWidget {
   const register({super.key});
@@ -15,48 +17,54 @@ class _registerState extends State<register> {
   final Color greyColor = const Color(0xFF9098B1);
   final Color whiteColor = const Color(0xFFFFFFFF);
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _nombresController = TextEditingController();
-  final TextEditingController _apellidosController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _celularController = TextEditingController();
+  final TextEditingController _nombreController = TextEditingController();
+  final TextEditingController _apellidoController = TextEditingController();
+  final TextEditingController _correoController = TextEditingController();
+  final TextEditingController _telefonoController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _validarcController = TextEditingController();
 
-  //Funcion para guardar datos en SharedPreferences
-  Future<void> _saveUserData(String email, String password) async {
+  // Nuevo método para guardar datos tras registro
+  Future<void> _saveUserSession(Map<String, dynamic> user) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('userEmail', email);
-    await prefs.setString('userPassword', password);
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text('Datos Guardados correctamente')));
+    await prefs.setString('userNombre', user['nombre'] ?? '');
+    await prefs.setString('userApellido', user['apellido'] ?? '');
+    await prefs.setString('userCorreo', user['correo'] ?? '');
+    await prefs.setString('userTelefono', user['telefono'] ?? '');
+    // Puedes guardar más campos si el backend los retorna
   }
 
-  //Funcion permite llamar _saveUserData desde el boton de registro
-  void _onRegisterButton() {
+  void _onRegisterButton() async {
     if (_formKey.currentState!.validate()) {
-      // Verificar que las contraseñas coincidan
       if (_passwordController.text != _validarcController.text) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Las contraseñas no coinciden'))
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Las contraseñas no coinciden')));
         return;
       }
-      
-      //si la validacion es exitosa
-      _saveUserData(
-        _emailController.text.trim(),
-        _passwordController.text.trim(),
-      ).then((_) {
-        // Redirigir al login después de registrar
+      try {
+        final user = await AuthService.registerUser(
+          nombre: _nombreController.text.trim(),
+          apellido: _apellidoController.text.trim(),
+          correo: _correoController.text.trim(),
+          telefono: _telefonoController.text.trim(),
+          password: _passwordController.text.trim(),
+        );
+        await _saveUserSession(user);
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Registro exitoso')));
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (context) => login()),
           (route) => false,
         );
-      });
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.toString().replaceAll('Exception: ', ''))),
+        );
+      }
     } else {
-      //si falla mi validacion _formKey
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text('Fallo! Revisar los campos')));
@@ -75,7 +83,7 @@ class _registerState extends State<register> {
             child: ListView(
               children: [
                 const SizedBox(height: 40),
-                
+
                 // Logo/Título
                 Column(
                   children: [
@@ -90,21 +98,18 @@ class _registerState extends State<register> {
                     const SizedBox(height: 8),
                     Text(
                       "Completa el formulario para registrarte",
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: greyColor,
-                      ),
+                      style: TextStyle(fontSize: 14, color: greyColor),
                     ),
                   ],
                 ),
-                
+
                 const SizedBox(height: 40),
-                
-                // Campo Nombres
+
+                // Campo Nombre
                 TextFormField(
-                  controller: _nombresController,
+                  controller: _nombreController,
                   decoration: InputDecoration(
-                    labelText: 'Nombres',
+                    labelText: 'Nombre',
                     labelStyle: TextStyle(color: greyColor),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5),
@@ -120,16 +125,16 @@ class _registerState extends State<register> {
                     ),
                   ),
                   validator: (value) =>
-                      value!.isEmpty ? "Ingresa tus nombres" : null,
+                      value!.isEmpty ? "Ingresa tu nombre" : null,
                 ),
-                
+
                 const SizedBox(height: 16),
-                
-                // Campo Apellidos
+
+                // Campo Apellido
                 TextFormField(
-                  controller: _apellidosController,
+                  controller: _apellidoController,
                   decoration: InputDecoration(
-                    labelText: 'Apellidos',
+                    labelText: 'Apellido',
                     labelStyle: TextStyle(color: greyColor),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5),
@@ -145,16 +150,16 @@ class _registerState extends State<register> {
                     ),
                   ),
                   validator: (value) =>
-                      value!.isEmpty ? "Ingresa tus apellidos" : null,
+                      value!.isEmpty ? "Ingresa tu apellido" : null,
                 ),
-                
+
                 const SizedBox(height: 16),
-                
-                // Campo Email
+
+                // Campo Correo
                 TextFormField(
-                  controller: _emailController,
+                  controller: _correoController,
                   decoration: InputDecoration(
-                    labelText: 'Email',
+                    labelText: 'Correo',
                     labelStyle: TextStyle(color: greyColor),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5),
@@ -170,16 +175,16 @@ class _registerState extends State<register> {
                     ),
                   ),
                   validator: (value) =>
-                      value!.isEmpty ? "Ingresa tu email" : null,
+                      value!.isEmpty ? "Ingresa tu correo" : null,
                 ),
-                
+
                 const SizedBox(height: 16),
-                
-                // Campo Celular
+
+                // Campo Teléfono
                 TextFormField(
-                  controller: _celularController,
+                  controller: _telefonoController,
                   decoration: InputDecoration(
-                    labelText: 'Celular',
+                    labelText: 'Teléfono',
                     labelStyle: TextStyle(color: greyColor),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5),
@@ -195,11 +200,13 @@ class _registerState extends State<register> {
                     ),
                   ),
                   validator: (value) =>
-                      value!.isEmpty ? "Ingresa tu celular" : null,
+                      value!.isEmpty ? "Ingresa tu teléfono" : null,
                 ),
-                
+
                 const SizedBox(height: 16),
-                
+
+                // ...eliminado campo celular, ahora se usa teléfono...
+
                 // Campo Contraseña
                 TextFormField(
                   controller: _passwordController,
@@ -223,9 +230,9 @@ class _registerState extends State<register> {
                   validator: (value) =>
                       value!.isEmpty ? "Ingresa tu contraseña" : null,
                 ),
-                
+
                 const SizedBox(height: 16),
-                
+
                 // Campo Validar Contraseña
                 TextFormField(
                   controller: _validarcController,
@@ -249,9 +256,9 @@ class _registerState extends State<register> {
                   validator: (value) =>
                       value!.isEmpty ? "Confirma tu contraseña" : null,
                 ),
-                
+
                 const SizedBox(height: 24),
-                
+
                 // Botón Registrarse
                 ElevatedButton(
                   onPressed: () {
@@ -268,25 +275,19 @@ class _registerState extends State<register> {
                   ),
                   child: const Text(
                     'Registrarse',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                    ),
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
                   ),
                 ),
-                
+
                 const SizedBox(height: 32),
-                
+
                 // Volver al Login
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
                       "¿Ya tienes una cuenta? ",
-                      style: TextStyle(
-                        color: greyColor,
-                        fontSize: 14,
-                      ),
+                      style: TextStyle(color: greyColor, fontSize: 14),
                     ),
                     GestureDetector(
                       onTap: () {

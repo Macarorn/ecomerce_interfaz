@@ -1,6 +1,5 @@
+import 'package:ecomerce_interfaz/screens/login.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'change_password.dart';
 
 class ForgotPassword extends StatefulWidget {
   const ForgotPassword({super.key});
@@ -20,38 +19,27 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   final TextEditingController _emailController = TextEditingController();
   bool _isLoading = false;
 
-  // Función para verificar si el correo existe
+  // Función para mostrar mensaje de revisión y regresar al login
   Future<void> _verifyEmail() async {
     if (_formKey.currentState!.validate()) {
       setState(() {
         _isLoading = true;
       });
-
-      // Simular un delay para mostrar el loading
       await Future.delayed(const Duration(milliseconds: 500));
-
-      final prefs = await SharedPreferences.getInstance();
-      String? savedEmail = prefs.getString('userEmail');
-      String email = _emailController.text.trim();
-
-      if (savedEmail == email) {
-        // Correo encontrado, navegar a cambio de contraseña
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ChangePassword(),
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Si el correo está registrado, recibirás instrucciones. Correo en revisión.',
           ),
-        );
-      } else {
-        // Correo no encontrado
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('El correo $email no está registrado'),
-            backgroundColor: errorColor,
-          ),
-        );
-      }
-
+          backgroundColor: primaryColor,
+        ),
+      );
+      await Future.delayed(const Duration(seconds: 1));
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => login()),
+        (route) => false,
+      );
       setState(() {
         _isLoading = false;
       });
@@ -99,10 +87,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     const SizedBox(height: 8),
                     Text(
                       "Ingresa tu correo registrado para continuar",
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: greyColor,
-                      ),
+                      style: TextStyle(fontSize: 14, color: greyColor),
                       textAlign: TextAlign.center,
                     ),
                   ],
@@ -113,11 +98,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 // Icono ilustrativo
                 Container(
                   margin: const EdgeInsets.symmetric(vertical: 20),
-                  child: Icon(
-                    Icons.lock_reset,
-                    size: 80,
-                    color: primaryColor,
-                  ),
+                  child: Icon(Icons.lock_reset, size: 80, color: primaryColor),
                 ),
 
                 const SizedBox(height: 20),
@@ -165,8 +146,9 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     if (value == null || value.isEmpty) {
                       return "Por favor ingresa tu correo electrónico";
                     }
-                    if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
-                        .hasMatch(value)) {
+                    if (!RegExp(
+                      r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                    ).hasMatch(value)) {
                       return "Por favor ingresa un correo válido";
                     }
                     return null;
@@ -241,11 +223,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                   ),
                   child: Row(
                     children: [
-                      Icon(
-                        Icons.info_outline,
-                        color: primaryColor,
-                        size: 24,
-                      ),
+                      Icon(Icons.info_outline, color: primaryColor, size: 24),
                       const SizedBox(width: 12),
                       Expanded(
                         child: Text(

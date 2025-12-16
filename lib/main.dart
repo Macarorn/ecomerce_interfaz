@@ -47,15 +47,15 @@ class _AuthWrapperState extends State<AuthWrapper> {
   // Función para verificar si el usuario ya inició sesión
   Future<void> _checkLoginStatus() async {
     final prefs = await SharedPreferences.getInstance();
-    final savedEmail = prefs.getString('userEmail');
-    final savedPassword = prefs.getString('userPassword');
+    final savedNombre = prefs.getString('userNombre');
+    final savedCorreo = prefs.getString('userCorreo');
 
-    // Verifica si hay credenciales guardadas
+    // Verifica si hay credenciales guardadas (nuevos campos)
     final isLoggedIn =
-        savedEmail != null &&
-        savedEmail.isNotEmpty &&
-        savedPassword != null &&
-        savedPassword.isNotEmpty;
+        savedNombre != null &&
+        savedNombre.isNotEmpty &&
+        savedCorreo != null &&
+        savedCorreo.isNotEmpty;
 
     setState(() {
       _isLoggedIn = isLoggedIn;

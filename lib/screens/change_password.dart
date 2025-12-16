@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../services/auth_service.dart';
+import 'login.dart';
 
 class ChangePassword extends StatefulWidget {
   const ChangePassword({super.key});
@@ -17,9 +19,10 @@ class _ChangePasswordState extends State<ChangePassword> {
   final _formKey = GlobalKey<FormState>();
 
   final TextEditingController _newPasswordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
 
-  // Función para cambiar la contraseña
+  // Función para cambiar la contraseña en el backend
   Future<void> _changePassword() async {
     if (_formKey.currentState!.validate()) {
       if (_newPasswordController.text != _confirmPasswordController.text) {
@@ -28,22 +31,30 @@ class _ChangePasswordState extends State<ChangePassword> {
         );
         return;
       }
-
       final prefs = await SharedPreferences.getInstance();
-      
-      // Actualizar la contraseña
-      await prefs.setString('userPassword', _newPasswordController.text);
-      
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Contraseña actualizada correctamente')),
-      );
-      
-      // Regresar al login después de cambiar la contraseña
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => login()),
-        (route) => false,
-      );
+      final id = prefs.getString('userId') ?? '';
+      final nombre = prefs.getString('userNombre') ?? '';
+      final correo = prefs.getString('userCorreo') ?? '';
+      try {
+        await AuthService.updatePassword(
+          id: id,
+          nombre: nombre,
+          correo: correo,
+          password: _newPasswordController.text,
+        );
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Contraseña actualizada correctamente')),
+        );
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => login()),
+          (route) => false,
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error al actualizar la contraseña')),
+        );
+      }
     }
   }
 
@@ -59,7 +70,7 @@ class _ChangePasswordState extends State<ChangePassword> {
             child: ListView(
               children: [
                 const SizedBox(height: 40),
-                
+
                 // Título
                 Column(
                   children: [
@@ -74,28 +85,21 @@ class _ChangePasswordState extends State<ChangePassword> {
                     const SizedBox(height: 8),
                     Text(
                       "Crea una nueva contraseña de seguridad",
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: greyColor,
-                      ),
+                      style: TextStyle(fontSize: 14, color: greyColor),
                     ),
                   ],
                 ),
-                
+
                 const SizedBox(height: 40),
-                
+
                 // Icono ilustrativo
                 Container(
                   margin: const EdgeInsets.symmetric(vertical: 20),
-                  child: Icon(
-                    Icons.lock_reset,
-                    size: 80,
-                    color: primaryColor,
-                  ),
+                  child: Icon(Icons.lock_reset, size: 80, color: primaryColor),
                 ),
-                
+
                 const SizedBox(height: 20),
-                
+
                 // Instrucciones
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -109,9 +113,9 @@ class _ChangePasswordState extends State<ChangePassword> {
                     textAlign: TextAlign.center,
                   ),
                 ),
-                
+
                 const SizedBox(height: 40),
-                
+
                 // Nueva Contraseña
                 TextFormField(
                   controller: _newPasswordController,
@@ -143,9 +147,9 @@ class _ChangePasswordState extends State<ChangePassword> {
                     return null;
                   },
                 ),
-                
+
                 const SizedBox(height: 16),
-                
+
                 // Confirmar Nueva Contraseña
                 TextFormField(
                   controller: _confirmPasswordController,
@@ -174,9 +178,9 @@ class _ChangePasswordState extends State<ChangePassword> {
                     return null;
                   },
                 ),
-                
+
                 const SizedBox(height: 40),
-                
+
                 // Botón Guardar
                 ElevatedButton(
                   onPressed: () {
@@ -193,15 +197,12 @@ class _ChangePasswordState extends State<ChangePassword> {
                   ),
                   child: const Text(
                     'Guardar Contraseña',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                    ),
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
                   ),
                 ),
-                
+
                 const SizedBox(height: 20),
-                
+
                 // Botón Cancelar
                 OutlinedButton(
                   onPressed: () {
@@ -223,9 +224,9 @@ class _ChangePasswordState extends State<ChangePassword> {
                     ),
                   ),
                 ),
-                
+
                 const SizedBox(height: 40),
-                
+
                 // Información de seguridad
                 Container(
                   padding: const EdgeInsets.all(16),
@@ -236,11 +237,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                   ),
                   child: Row(
                     children: [
-                      Icon(
-                        Icons.security,
-                        color: primaryColor,
-                        size: 24,
-                      ),
+                      Icon(Icons.security, color: primaryColor, size: 24),
                       const SizedBox(width: 12),
                       Expanded(
                         child: Text(
