@@ -1,8 +1,10 @@
+import 'package:ecomerce_interfaz/main.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:ecomerce_interfaz/main.dart'; 
-import 'register.dart';
+
+import '../services/auth_service.dart';
 import 'forgot_password.dart';
+import 'register.dart';
 
 class login extends StatefulWidget {
   const login({super.key});
@@ -21,27 +23,36 @@ class _loginState extends State<login> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _contraseniaController = TextEditingController();
 
-  // Función para login
+  // Función para login usando el backend
   Future<void> _login() async {
     if (_formKey.currentState!.validate()) {
-      final prefs = await SharedPreferences.getInstance();
-      String? savedEmail = prefs.getString('userEmail');
-      String? savedPassword = prefs.getString('userPassword');
+      try {
+        final result = await AuthService.loginUser(
+          nombre: _emailController.text.trim(),
+          password: _contraseniaController.text,
+        );
+        // Guardar datos del usuario autenticado
+        final prefs = await SharedPreferences.getInstance();
+        final user = result['user'] ?? {};
+        await prefs.setString('userId', user['id']?.toString() ?? '');
+        await prefs.setString('userNombre', user['nombre'] ?? '');
+        await prefs.setString('userCorreo', user['correo'] ?? '');
+        await prefs.setString('userApellido', user['apellido'] ?? '');
+        await prefs.setString('userTelefono', user['telefono'] ?? '');
 
-      if (savedEmail == _emailController.text.trim() && 
-          savedPassword == _contraseniaController.text) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('¡Bienvenido!')));
-        
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('¡Bienvenido!')));
         // Navegar al HomeScreen después de login exitoso
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (context) => const MainApp()),
           (route) => false,
         );
-      } else {
+      } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Correo o contraseña incorrectos!')));
+          SnackBar(content: Text(e.toString().replaceAll('Exception: ', ''))),
+        );
       }
     }
   }
@@ -58,7 +69,7 @@ class _loginState extends State<login> {
             child: ListView(
               children: [
                 const SizedBox(height: 40),
-                
+
                 // Logo/Bienvenida
                 Column(
                   children: [
@@ -73,21 +84,19 @@ class _loginState extends State<login> {
                     const SizedBox(height: 8),
                     Text(
                       "Inicia sesión para continuar",
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: greyColor,
-                      ),
+                      style: TextStyle(fontSize: 14, color: greyColor),
                     ),
                   ],
                 ),
-                
+
                 const SizedBox(height: 40),
-                
-                // Campo Email
+
+                // Campo Nombre
                 TextFormField(
                   controller: _emailController,
                   decoration: InputDecoration(
-                    labelText: 'Email',
+                    labelText: 'Nombre',
+                    hintText: 'Ingresa tu nombre de usuario',
                     labelStyle: TextStyle(color: greyColor),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5),
@@ -103,11 +112,11 @@ class _loginState extends State<login> {
                     ),
                   ),
                   validator: (value) =>
-                      value!.isEmpty ? "Ingresa tu email" : null,
+                      value!.isEmpty ? "Ingresa tu nombre" : null,
                 ),
-                
+
                 const SizedBox(height: 16),
-                
+
                 // Campo Contraseña
                 TextFormField(
                   controller: _contraseniaController,
@@ -131,9 +140,9 @@ class _loginState extends State<login> {
                   validator: (value) =>
                       value!.isEmpty ? "Ingresa tu contraseña" : null,
                 ),
-                
+
                 const SizedBox(height: 16),
-                
+
                 // Botón Iniciar Sesión
                 ElevatedButton(
                   onPressed: () {
@@ -152,42 +161,40 @@ class _loginState extends State<login> {
                   ),
                   child: const Text(
                     'Iniciar Sesión',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                    ),
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
                   ),
                 ),
-                
+
                 const SizedBox(height: 24),
-                
+
                 // Separador "O"
                 Row(
                   children: [
-                    Expanded(
-                      child: Divider(color: greyColor.withOpacity(0.5)),
-                    ),
+                    Expanded(child: Divider(color: greyColor.withOpacity(0.5))),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: Text(
                         "O",
-                        style: TextStyle(
-                          color: greyColor,
-                          fontSize: 14,
-                        ),
+                        style: TextStyle(color: greyColor, fontSize: 14),
                       ),
                     ),
-                    Expanded(
-                      child: Divider(color: greyColor.withOpacity(0.5)),
-                    ),
+                    Expanded(child: Divider(color: greyColor.withOpacity(0.5))),
                   ],
                 ),
-                
+
                 const SizedBox(height: 24),
-                
+
                 // Botón Google
                 OutlinedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          'Iniciar sesión con Google no está habilitado aún',
+                        ),
+                      ),
+                    );
+                  },
                   style: OutlinedButton.styleFrom(
                     minimumSize: const Size(double.infinity, 57),
                     side: BorderSide(color: greyColor.withOpacity(0.5)),
@@ -211,12 +218,20 @@ class _loginState extends State<login> {
                     ],
                   ),
                 ),
-                
+
                 const SizedBox(height: 12),
-                
-                // Botón Facebook
+
+                // Botón Facebook,
                 OutlinedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          'Iniciar sesión con Facebook no está habilitado aún',
+                        ),
+                      ),
+                    );
+                  },
                   style: OutlinedButton.styleFrom(
                     minimumSize: const Size(double.infinity, 57),
                     side: BorderSide(color: greyColor.withOpacity(0.5)),
@@ -240,9 +255,9 @@ class _loginState extends State<login> {
                     ],
                   ),
                 ),
-                
+
                 const SizedBox(height: 24),
-                
+
                 // Olvidé contraseña
                 GestureDetector(
                   onTap: () {
@@ -261,19 +276,16 @@ class _loginState extends State<login> {
                     textAlign: TextAlign.center,
                   ),
                 ),
-                
+
                 const SizedBox(height: 32),
-                
+
                 // Registrarse
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
                       "¿No tienes una cuenta? ",
-                      style: TextStyle(
-                        color: greyColor,
-                        fontSize: 14,
-                      ),
+                      style: TextStyle(color: greyColor, fontSize: 14),
                     ),
                     GestureDetector(
                       onTap: () {
